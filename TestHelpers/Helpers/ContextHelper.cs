@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TestHelpers.Helpers
 {
-    public class ContextHelper<TContext> where TContext : Microsoft.EntityFrameworkCore.DbContext , IDisposable
+    public class ContextHelper<TContext> : IDisposable where TContext : Microsoft.EntityFrameworkCore.DbContext , IDisposable
     {
         private SqliteConnection Connection { get; }
         public TContext Context { get;}
@@ -22,6 +22,7 @@ namespace TestHelpers.Helpers
             Context.Database.EnsureCreated();
         }
 
+        void IDisposable.Dispose() { }
 
         public void Dispose()
         {
