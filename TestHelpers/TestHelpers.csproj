@@ -3,6 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <IsPackable>true</IsPackable>
+    <PackageId>AspNetCore.TestHelpers</PackageId>
+    <Authors>Jason Sylvestre</Authors>
+    <Description>Test Helpers for .NET Core</Description>
   </PropertyGroup>
 
   <ItemGroup>
