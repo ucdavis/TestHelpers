@@ -68,8 +68,8 @@ namespace TestHelpers.Helpers
                 for (int j = 0; j < foundAttributes.Count(); j++)
                 {
                     //Assert.AreEqual(expectedField.Attributes[j], foundAttributes[j].ToString(), "For Field: " + propertyInfo.Name);
-                    Assert.True(foundAttributes[j].ToString().StartsWith(
-                        expectedField.ParameterAttributes[j].AttributeNameStartsWith));
+                    //Assert.True(foundAttributes[j].ToString().StartsWith(expectedField.ParameterAttributes[j].AttributeNameStartsWith));
+                    Assert.StartsWith(expectedField.ParameterAttributes[j].AttributeNameStartsWith, foundAttributes[j].ToString());
                     var namedParameters = foundAttributes[j].NamedArguments.ToList();
 
                     namedParameters.Count.ShouldBe(expectedField.ParameterAttributes[j].NamedParameters.Count, "For Field: " + propertyInfo.Name + " For Attribute: " + foundAttributes[j]);
