@@ -6,7 +6,7 @@
     <PackageId>AspNetCore.TestHelpers</PackageId>
     <Authors>Jason Sylvestre</Authors>
     <Description>Test Helpers for .NET Core</Description>
-    <projectUrl>https://github.com/ucdavis/TestHelpers</projectUrl>
+    <PackageProjectUrl>https://github.com/ucdavis/TestHelpers</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
