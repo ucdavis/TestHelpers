@@ -8,7 +8,7 @@ using Xunit.Abstractions;
 
 namespace TestHelpers.Helpers
 {
-    public class ControllerReflection<TAttribute>
+    public class ControllerReflection
     {
         private readonly ITestOutputHelper output;
         public ControllerReflection(ITestOutputHelper output)
@@ -24,7 +24,7 @@ namespace TestHelpers.Helpers
         /// <param name="totalAttributeCount"></param>
         /// <param name="isSecondMethod">If you have an Edit Get and an Edit Post, and you are testing the post</param>
         /// <returns>So you can further examine the attribute. For Example ElementAt(0).Roles.ShouldBe("Admin");</returns>
-        public IEnumerable<TAttribute> MethodExpectedAttribute(Type controllerClass, 
+        public IEnumerable<TAttribute> MethodExpectedAttribute<TAttribute>(Type controllerClass, 
             string methodName, 
             int totalAttributeCount,
             bool isSecondMethod = false)
@@ -60,7 +60,7 @@ namespace TestHelpers.Helpers
         /// <param name="controllerClass">typeof(SomeController);</param>
         /// <param name="totalAttributeCount"></param>
         /// <returns></returns>
-        public IEnumerable<TAttribute> ClassExpectedAttribute(Type controllerClass, int totalAttributeCount)
+        public IEnumerable<TAttribute> ClassExpectedAttribute<TAttribute>(Type controllerClass, int totalAttributeCount)
         {
             var typeInfo = controllerClass.GetTypeInfo();
             var allAttributes = typeInfo.GetCustomAttributes(true);
