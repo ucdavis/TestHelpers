@@ -69,6 +69,22 @@ namespace TestHelpers.Helpers
             typeInfo.BaseType.Name.ShouldBe(expectedBaseName);
         }
 
+        public void ControllerPublicMethods(int expectedCount)
+        {
+            var result = ControllerClass.GetMethods().Where(a => a.DeclaringType == ControllerClass);
+
+            if (result.Count() != expectedCount)
+            {
+                output.WriteLine("Found Public Methods");
+                foreach (var methodInfo in result)
+                {                    
+                    output.WriteLine(methodInfo.Name);
+                }
+            }
+
+            result.Count().ShouldBe(expectedCount);
+        }
+
         /// <summary>
         /// Through reflection, examines the attributes for a class
         /// </summary>
