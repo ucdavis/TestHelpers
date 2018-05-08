@@ -57,6 +57,28 @@ namespace TestHelpers.Helpers
             return expectedAttribute;
         }
 
+        public void MethodExpectedNoAttribute(string methodName, string testMessage = null, bool isSecondMethod = false)
+        {
+            if (!string.IsNullOrWhiteSpace(testMessage))
+            {
+                output.WriteLine(testMessage);
+            }
+            var controllerMethod = ControllerClass.GetMethods().Where(a => a.Name == methodName);
+            var element = controllerMethod.ElementAt(isSecondMethod ? 1 : 0);
+
+            var allAttributes = element.GetCustomAttributes(true);
+            if (allAttributes.Any())
+            {
+                foreach (var attribute in allAttributes)
+                {
+                    output.WriteLine(attribute.ToString());
+                }
+            }
+
+            allAttributes.Count().ShouldBe(0, $"Total Attribute count wrong (for) {testMessage}");
+
+        }
+
         public void ControllerInherits(string expectedBaseName, string testMessage = null)
         {
             if (!string.IsNullOrWhiteSpace(testMessage))
