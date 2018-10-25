@@ -137,5 +137,25 @@ namespace TestHelpers.Helpers
             return expectedAttribute;
         }
 
+        public void ClassExpectedNoAttribute(string testMessage = null, bool showListOfAttributes = true)
+        {
+            if (!string.IsNullOrWhiteSpace(testMessage))
+            {
+                output.WriteLine(testMessage);
+            }
+
+            var typeInfo = ControllerClass.GetTypeInfo();
+            var allAttributes = typeInfo.GetCustomAttributes(true);
+            if (showListOfAttributes)
+            {
+                foreach (var o in allAttributes)
+                {
+                    output.WriteLine(o.ToString()); //Output shows 
+                }
+            }
+
+            allAttributes.Count().ShouldBe(0, $"Total Attribute count wrong (for) {testMessage}");
+        }
+
     }
 }
