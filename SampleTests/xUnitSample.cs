@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using SampleTests.Models;
 using Shouldly;
+using TestHelpers.Helpers;
 using Xunit;
+using Xunit.Sdk;
 
 namespace SampleTests
 {
@@ -16,15 +19,15 @@ namespace SampleTests
             Assert.Equal(4, 2 + 2);
         }
 
-        [Fact(Skip = "Test skipped because it is a test of the fail")]
+        [Fact]
         public void BadMath()
         {
-            Assert.Equal(4, 1 + 1);
-        }
-        [Fact]
-        public void BadMath2()
-        {
-            Assert.Equal(4, 1 + 1);
+            
+            Should.Throw<EqualException>(() =>
+                {
+                    Assert.Equal(4, 1 + 1);
+                })
+                .Message.ShouldBe("Assert.Equal() Failure\r\nExpected: 4\r\nActual:   2");
         }
 
         [Theory]

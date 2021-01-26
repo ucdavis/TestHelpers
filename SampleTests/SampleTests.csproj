@@ -15,9 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="TestHelpers">
-      <HintPath>..\TestHelpers\bin\Debug\netcoreapp2.0\TestHelpers.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\TestHelpers\TestHelpers.csproj" />
   </ItemGroup>
 
 </Project>

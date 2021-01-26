@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using SampleTests.Models;
+using Shouldly;
 using TestHelpers.Helpers;
 using Xunit;
 
@@ -34,8 +35,11 @@ namespace SampleTests
             expectedFields.Add(new NameAndType("Counter", "System.Int32", new List<string>()));
             //expectedFields.Add(new NameAndType("Name", "System.String", new List<string>()));
 
-
-            AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ExampleModel));
+            Should.Throw<ShouldAssertException>(() =>
+            {
+                AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ExampleModel));
+            })
+                .Message.ShouldStartWith("3\n    should be\n2\n    but was not");
         }
 
         [Fact]
@@ -50,7 +54,11 @@ namespace SampleTests
             expectedFields.Add(new NameAndType("Name", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Name2", "System.String", new List<string>()));
 
-            AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ExampleModel));
+            Should.Throw<ShouldAssertException>(() =>
+                {
+                    AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ExampleModel));
+                })
+                .Message.ShouldStartWith("3\n    should be\n4\n    but was not");
         }
 
         [Fact]
@@ -62,7 +70,11 @@ namespace SampleTests
             expectedFields.Add(new NameAndType("Name", "System.String", new List<string>()));
 
 
-            AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ExampleModel));
+            Should.Throw<ShouldAssertException>(() =>
+                {
+                    AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ExampleModel));
+                })
+                .Message.ShouldStartWith("1\n    should be\n0\n    but was not");
         }
 
         [Fact]
@@ -76,7 +88,11 @@ namespace SampleTests
             expectedFields.Add(new NameAndType("Name", "System.String", new List<string>()));
 
 
-            AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ExampleModel));
+            Should.Throw<ShouldAssertException>(() =>
+                {
+                    AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ExampleModel));
+                })
+                .Message.ShouldContain("should be\n\"Not right\"\n    but was not");
         }
 
         [Fact]
@@ -91,7 +107,11 @@ namespace SampleTests
             expectedFields.Add(new NameAndType("Counter", "System.Int32", new List<string>()));
             expectedFields.Add(new NameAndType("Name", "System.String", new List<string>()));
 
-            AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ExampleModel));
+            Should.Throw<ShouldAssertException>(() =>
+                {
+                    AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ExampleModel));
+                })
+                .Message.ShouldStartWith("1\n    should be\n2\n    but was not");
         }
 
     }
