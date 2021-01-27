@@ -23,7 +23,7 @@ namespace TestHelpers.Helpers
             var mockSet = new Mock<DbSet<T>>();
 
             mockSet.As<IAsyncEnumerable<T>>()
-                .Setup(m => m.GetEnumerator())
+                .Setup(m => m.GetAsyncEnumerator(default))
                 .Returns(new TestAsyncEnumerator<T>(data.GetEnumerator()));
 
 

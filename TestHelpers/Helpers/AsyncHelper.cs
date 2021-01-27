@@ -41,9 +41,9 @@ namespace TestHelpers.Helpers
             return new TestAsyncEnumerable<TResult>(expression);
         }
 
-        public Task<TResult> ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken)
+        public TResult ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken)
         {
-            return Task.FromResult(Execute<TResult>(expression));
+            return Execute<TResult>(expression);
         }
     }
 
@@ -57,10 +57,10 @@ namespace TestHelpers.Helpers
             : base(expression)
         { }
 
-        //public IAsyncEnumerator<T> GetAsyncEnumerator()
-        //{
-        //    return new TestAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());
-        //}
+        public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+        {
+            return new TestAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());
+        }
 
 
 
@@ -84,15 +84,21 @@ namespace TestHelpers.Helpers
             _inner = inner;
         }
 
-        public void Dispose()
+        public ValueTask DisposeAsync()
         {
             _inner.Dispose();
+            return new ValueTask();
         }
 
-        //public Task<bool> MoveNextAsync(CancellationToken cancellationToken)
-        //{
-        //    return Task.FromResult(_inner.MoveNext());
-        //}
+        public ValueTask<bool> MoveNextAsync(CancellationToken cancellationToken)
+        {
+            return  new ValueTask<bool>(_inner.MoveNext());
+        }
+
+        public ValueTask<bool> MoveNextAsync()
+        {
+            return new ValueTask<bool>(_inner.MoveNext());
+        }
 
         public Task<bool> MoveNext(CancellationToken cancellationToken)
         {
