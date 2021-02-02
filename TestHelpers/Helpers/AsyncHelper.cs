@@ -43,15 +43,26 @@ namespace TestHelpers.Helpers
 
         public TResult ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken)
         {
-            return Execute<TResult>(expression);
+            var expectedResultType = typeof(TResult).GetGenericArguments()[0];
+            var executionResult = typeof(IQueryProvider)
+                .GetMethod(
+                    name: nameof(IQueryProvider.Execute),
+                    genericParameterCount: 1,
+                    types: new[] { typeof(Expression) })
+                .MakeGenericMethod(expectedResultType)
+                .Invoke(this, new[] { expression });
+
+            return (TResult)typeof(Task).GetMethod(nameof(Task.FromResult))
+                ?.MakeGenericMethod(expectedResultType)
+                .Invoke(null, new[] { executionResult });
         }
     }
 
     internal class TestAsyncEnumerable<T> : EnumerableQuery<T>, IAsyncEnumerable<T>, IQueryable<T>
     {
-        //public TestAsyncEnumerable(IEnumerable<T> enumerable)
-        //    : base(enumerable)
-        //{ }
+        public TestAsyncEnumerable(IEnumerable<T> enumerable)
+            : base(enumerable)
+        { }
 
         public TestAsyncEnumerable(Expression expression)
             : base(expression)
@@ -59,7 +70,7 @@ namespace TestHelpers.Helpers
 
         public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new TestAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());
+            return GetEnumerator();
         }
 
 
@@ -92,12 +103,12 @@ namespace TestHelpers.Helpers
 
         public ValueTask<bool> MoveNextAsync(CancellationToken cancellationToken)
         {
-            return  new ValueTask<bool>(_inner.MoveNext());
+            return new ValueTask<bool>(_inner.MoveNext());
         }
 
         public ValueTask<bool> MoveNextAsync()
         {
-            return new ValueTask<bool>(_inner.MoveNext());
+            return MoveNextAsync(default);
         }
 
         public Task<bool> MoveNext(CancellationToken cancellationToken)
