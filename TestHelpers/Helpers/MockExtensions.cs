@@ -15,6 +15,7 @@ namespace TestHelpers.Helpers
             mockSet.As<IQueryable<T>>().Setup(m => m.Expression).Returns(data.Expression);
             mockSet.As<IQueryable<T>>().Setup(m => m.ElementType).Returns(data.ElementType);
             mockSet.As<IQueryable<T>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+            mockSet.As<IEnumerable<T>>().Setup(x => x.GetEnumerator()).Returns(data.GetEnumerator());
             return mockSet;
         }
 
@@ -23,7 +24,7 @@ namespace TestHelpers.Helpers
             var mockSet = new Mock<DbSet<T>>();
 
             mockSet.As<IAsyncEnumerable<T>>()
-                .Setup(m => m.GetEnumerator())
+                .Setup(m => m.GetAsyncEnumerator(default))
                 .Returns(new TestAsyncEnumerator<T>(data.GetEnumerator()));
 
 
@@ -33,6 +34,9 @@ namespace TestHelpers.Helpers
 
             mockSet.As<IQueryable<T>>().Setup(m => m.Expression).Returns(data.Expression);
             mockSet.As<IQueryable<T>>().Setup(m => m.ElementType).Returns(data.ElementType);
+
+            mockSet.As<IQueryable<T>>().Setup(x => x.GetEnumerator()).Returns(data.GetEnumerator());
+            mockSet.As<IEnumerable<T>>().Setup(x => x.GetEnumerator()).Returns(data.GetEnumerator());
 
             return mockSet;
         }

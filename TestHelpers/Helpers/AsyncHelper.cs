@@ -41,26 +41,37 @@ namespace TestHelpers.Helpers
             return new TestAsyncEnumerable<TResult>(expression);
         }
 
-        public Task<TResult> ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken)
+        public TResult ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken)
         {
-            return Task.FromResult(Execute<TResult>(expression));
+            var expectedResultType = typeof(TResult).GetGenericArguments()[0];
+            var executionResult = typeof(IQueryProvider)
+                .GetMethod(
+                    name: nameof(IQueryProvider.Execute),
+                    genericParameterCount: 1,
+                    types: new[] { typeof(Expression) })
+                .MakeGenericMethod(expectedResultType)
+                .Invoke(this, new[] { expression });
+
+            return (TResult)typeof(Task).GetMethod(nameof(Task.FromResult))
+                ?.MakeGenericMethod(expectedResultType)
+                .Invoke(null, new[] { executionResult });
         }
     }
 
     internal class TestAsyncEnumerable<T> : EnumerableQuery<T>, IAsyncEnumerable<T>, IQueryable<T>
     {
-        //public TestAsyncEnumerable(IEnumerable<T> enumerable)
-        //    : base(enumerable)
-        //{ }
+        public TestAsyncEnumerable(IEnumerable<T> enumerable)
+            : base(enumerable)
+        { }
 
         public TestAsyncEnumerable(Expression expression)
             : base(expression)
         { }
 
-        //public IAsyncEnumerator<T> GetAsyncEnumerator()
-        //{
-        //    return new TestAsyncEnumerator<T>(this.AsEnumerable().GetEnumerator());
-        //}
+        public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+        {
+            return GetEnumerator();
+        }
 
 
 
@@ -84,15 +95,21 @@ namespace TestHelpers.Helpers
             _inner = inner;
         }
 
-        public void Dispose()
+        public ValueTask DisposeAsync()
         {
             _inner.Dispose();
+            return new ValueTask();
         }
 
-        //public Task<bool> MoveNextAsync(CancellationToken cancellationToken)
-        //{
-        //    return Task.FromResult(_inner.MoveNext());
-        //}
+        public ValueTask<bool> MoveNextAsync(CancellationToken cancellationToken)
+        {
+            return new ValueTask<bool>(_inner.MoveNext());
+        }
+
+        public ValueTask<bool> MoveNextAsync()
+        {
+            return MoveNextAsync(default);
+        }
 
         public Task<bool> MoveNext(CancellationToken cancellationToken)
         {
