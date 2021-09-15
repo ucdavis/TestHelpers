@@ -39,7 +39,7 @@ namespace SampleTests
             {
                 AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ExampleModel));
             })
-                .Message.ShouldStartWith("3\n    should be\n2\n    but was not");
+                .Message.ShouldStartWith("propertyInfos.Count()\n    should be\n2\n    but was\r\n3");
         }
 
         [Fact]
@@ -58,7 +58,7 @@ namespace SampleTests
                 {
                     AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ExampleModel));
                 })
-                .Message.ShouldStartWith("3\n    should be\n4\n    but was not");
+                .Message.ShouldStartWith("propertyInfos.Count()\n    should be\n4\n    but was\r\n3");
         }
 
         [Fact]
@@ -74,7 +74,7 @@ namespace SampleTests
                 {
                     AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ExampleModel));
                 })
-                .Message.ShouldStartWith("1\n    should be\n0\n    but was not");
+                .Message.ShouldStartWith("foundAttributes.Count()\n    should be\n0\n    but was\r\n1");
         }
 
         [Fact]
@@ -92,7 +92,7 @@ namespace SampleTests
                 {
                     AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ExampleModel));
                 })
-                .Message.ShouldContain("should be\n\"Not right\"\n    but was not");
+                .Message.ShouldContain("should be\n\"Not right\"\n    but was");
         }
 
         [Fact]
@@ -111,7 +111,7 @@ namespace SampleTests
                 {
                     AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ExampleModel));
                 })
-                .Message.ShouldStartWith("1\n    should be\n2\n    but was not");
+                .Message.ShouldStartWith("foundAttributes.Count()\n    should be\n2\n    but was\r\n1");
         }
 
     }
