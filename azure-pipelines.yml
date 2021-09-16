@@ -15,20 +15,25 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- task: NuGetToolInstaller@1
-
-- task: NuGetCommand@2
+- task: UseDotNet@2
+  displayName: 'Use .NET 5 sdk'
   inputs:
-    restoreSolution: '$(solution)'
+    packageType: 'sdk'
+    version: '5.x'
 
-- task: VSBuild@1
+- task: DotNetCoreCLI@2
   inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
-    platform: '$(buildPlatform)'
+    command: 'build'
     configuration: '$(buildConfiguration)'
+    projects: '**/*.csproj'
 
-- task: VSTest@2
+- task: DotNetCoreCLI@2
   inputs:
-    platform: '$(buildPlatform)'
+    command: 'pack'
     configuration: '$(buildConfiguration)'
+    packagesToPack: 'TestHelpers/TestHelpers/csproj'
+    nobuild: true
+    versioningScheme: byPrereleaseNumber
+    majorVersion: '1'
+    minorVersion: '1'
+    patchVersion: '4'
