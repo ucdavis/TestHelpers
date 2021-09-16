@@ -33,7 +33,8 @@ steps:
   inputs:
     command: 'test'
     projects: './SampleTests/SampleTests.csproj'
-    arguments: '--configuration $(buildConfiguration) --logger trx --results-directory $(Agent.TempDirectory)'
+    arguments: '--configuration $(buildConfiguration)'
+    publishTestResults: true
   continueOnError: false
 
 - task: DotNetCoreCLI@2
