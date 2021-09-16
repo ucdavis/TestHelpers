@@ -31,7 +31,7 @@ steps:
   inputs:
     command: 'pack'
     configuration: '$(buildConfiguration)'
-    packagesToPack: 'TestHelpers/TestHelpers/csproj'
+    packagesToPack: './TestHelpers/TestHelpers.csproj'
     nobuild: true
     versioningScheme: byPrereleaseNumber
     majorVersion: '1'
