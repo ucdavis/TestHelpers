@@ -27,7 +27,7 @@ namespace SampleTests
                 {
                     Assert.Equal(4, 1 + 1);
                 })
-                .Message.ShouldBe("Assert.Equal() Failure\r\nExpected: 4\r\nActual:   2");
+                .Message.ShouldBe($"Assert.Equal() Failure{Environment.NewLine}Expected: 4{Environment.NewLine}Actual:   2");
         }
 
         [Theory]

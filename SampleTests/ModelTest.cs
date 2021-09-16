@@ -39,7 +39,7 @@ namespace SampleTests
             {
                 AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ExampleModel));
             })
-                .Message.ShouldStartWith("propertyInfos.Count()\n    should be\n2\n    but was\r\n3");
+                .Message.ShouldStartWith($"propertyInfos.Count()\n    should be\n2\n    but was{Environment.NewLine}3");
         }
 
         [Fact]
@@ -58,7 +58,7 @@ namespace SampleTests
                 {
                     AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ExampleModel));
                 })
-                .Message.ShouldStartWith("propertyInfos.Count()\n    should be\n4\n    but was\r\n3");
+                .Message.ShouldStartWith($"propertyInfos.Count()\n    should be\n4\n    but was{Environment.NewLine}3");
         }
 
         [Fact]
@@ -74,7 +74,7 @@ namespace SampleTests
                 {
                     AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ExampleModel));
                 })
-                .Message.ShouldStartWith("foundAttributes.Count()\n    should be\n0\n    but was\r\n1");
+                .Message.ShouldStartWith($"foundAttributes.Count()\n    should be\n0\n    but was{Environment.NewLine}1");
         }
 
         [Fact]
@@ -111,7 +111,7 @@ namespace SampleTests
                 {
                     AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ExampleModel));
                 })
-                .Message.ShouldStartWith("foundAttributes.Count()\n    should be\n2\n    but was\r\n1");
+                .Message.ShouldStartWith($"foundAttributes.Count()\n    should be\n2\n    but was{Environment.NewLine}1");
         }
 
     }
