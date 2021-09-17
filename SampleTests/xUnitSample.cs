@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using SampleTests.Models;
 using Shouldly;
 using TestHelpers.Helpers;
@@ -22,12 +23,11 @@ namespace SampleTests
         [Fact]
         public void BadMath()
         {
-            
-            Should.Throw<EqualException>(() =>
+            Assert.Matches(@"Assert.Equal\(\) Failure\s+Expected: 4\s+Actual:   2",
+                Should.Throw<EqualException>(() =>
                 {
                     Assert.Equal(4, 1 + 1);
-                })
-                .Message.ShouldBe($"Assert.Equal() Failure{Environment.NewLine}Expected: 4{Environment.NewLine}Actual:   2");
+                }).Message);
         }
 
         [Theory]

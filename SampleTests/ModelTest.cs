@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Text.RegularExpressions;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using SampleTests.Models;
@@ -35,11 +36,11 @@ namespace SampleTests
             expectedFields.Add(new NameAndType("Counter", "System.Int32", new List<string>()));
             //expectedFields.Add(new NameAndType("Name", "System.String", new List<string>()));
 
-            Should.Throw<ShouldAssertException>(() =>
-            {
-                AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ExampleModel));
-            })
-                .Message.ShouldStartWith($"propertyInfos.Count()\n    should be\n2\n    but was{Environment.NewLine}3");
+            Assert.Matches(@"propertyInfos.Count\(\)\s+should be\s+2\s+but was\s+3", 
+                Should.Throw<ShouldAssertException>(() =>
+                {
+                    AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ExampleModel));
+                }).Message);
         }
 
         [Fact]
@@ -54,11 +55,11 @@ namespace SampleTests
             expectedFields.Add(new NameAndType("Name", "System.String", new List<string>()));
             expectedFields.Add(new NameAndType("Name2", "System.String", new List<string>()));
 
-            Should.Throw<ShouldAssertException>(() =>
+            Assert.Matches(@"propertyInfos.Count\(\)\s+should be\s+4\s+but was\s+3", 
+                Should.Throw<ShouldAssertException>(() =>
                 {
                     AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ExampleModel));
-                })
-                .Message.ShouldStartWith($"propertyInfos.Count()\n    should be\n4\n    but was{Environment.NewLine}3");
+                }).Message);
         }
 
         [Fact]
@@ -69,12 +70,11 @@ namespace SampleTests
             expectedFields.Add(new NameAndType("Counter", "System.Int32", new List<string>()));
             expectedFields.Add(new NameAndType("Name", "System.String", new List<string>()));
 
-
-            Should.Throw<ShouldAssertException>(() =>
+            Assert.Matches(@"foundAttributes.Count\(\)\s+should be\s+0\s+but was\s+1", 
+                Should.Throw<ShouldAssertException>(() =>
                 {
                     AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ExampleModel));
-                })
-                .Message.ShouldStartWith($"foundAttributes.Count()\n    should be\n0\n    but was{Environment.NewLine}1");
+                }).Message);
         }
 
         [Fact]
@@ -87,12 +87,11 @@ namespace SampleTests
             expectedFields.Add(new NameAndType("Counter", "System.Int32", new List<string>()));
             expectedFields.Add(new NameAndType("Name", "System.String", new List<string>()));
 
-
-            Should.Throw<ShouldAssertException>(() =>
+            Assert.Matches(@"should be\s+\""Not right\""\s+but was",
+                Should.Throw<ShouldAssertException>(() =>
                 {
                     AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ExampleModel));
-                })
-                .Message.ShouldContain("should be\n\"Not right\"\n    but was");
+                }).Message);
         }
 
         [Fact]
@@ -107,11 +106,11 @@ namespace SampleTests
             expectedFields.Add(new NameAndType("Counter", "System.Int32", new List<string>()));
             expectedFields.Add(new NameAndType("Name", "System.String", new List<string>()));
 
-            Should.Throw<ShouldAssertException>(() =>
+            Assert.Matches(@"foundAttributes.Count\(\)\s+should be\s+2\s+but was\s+1.*",
+                Should.Throw<ShouldAssertException>(() =>
                 {
                     AttributeAndFieldValidation.ValidateFieldsAndAttributes(expectedFields, typeof(ExampleModel));
-                })
-                .Message.ShouldStartWith($"foundAttributes.Count()\n    should be\n2\n    but was{Environment.NewLine}1");
+                }).Message);
         }
 
     }
