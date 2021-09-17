@@ -62,10 +62,10 @@ stages:
         nobuild: true
         versioningScheme: byBuildNumber 
 
-    # - publish: '$(Build.ArtifactStagingDirectory)/packages'
-    #   displayName: 'Publish Artifact: $(artifactNugetName)'
-    #   artifact: '$(artifactNugetName)'
-    #   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    - publish: '$(Build.ArtifactStagingDirectory)/packages'
+      displayName: 'Publish Artifact: $(artifactNugetName)'
+      artifact: '$(artifactNugetName)'
+      condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
 
 - stage: publish
   dependsOn: build
