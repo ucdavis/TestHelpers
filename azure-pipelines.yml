@@ -3,6 +3,9 @@
 # Add steps that publish symbols, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
+name: $(majorMinorVersion).$(semanticVersion) 
+# NOTE: not using $(rev:r) because rev resets when the default retention period expires
+
 trigger:
 - master
 
@@ -13,39 +16,89 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  projectName: 'TestHelpers'
+  artifactNugetName: 'packages-nuget'  
+  majorMinorVersion: 1.2
+  # semanticVersion counter is automatically incremented by one in each execution of pipeline
+  # second parameter is seed value to reset to every time the referenced majorMinorVersion is changed
+  semanticVersion: $[counter(variables['majorMinorVersion'], 0)]
 
-steps:
-- task: UseDotNet@2
-  displayName: 'Use .NET 5 sdk'
-  inputs:
-    packageType: 'sdk'
-    version: '5.x'
+stages:
+- stage: build
+  displayName: 'Build Nuget Package'
+  jobs:
+  - job: CI_Build
+    displayName: 'Nuget - Build, Test and Pack'    
+    steps:
+    - task: UseDotNet@2
+      displayName: 'Use .NET 5 sdk'
+      inputs:
+        packageType: 'sdk'
+        version: '5.x'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Build'
-  inputs:
-    command: 'build'
-    arguments: '--configuration $(buildConfiguration)'
-    projects: '**/*.csproj'
+    - task: DotNetCoreCLI@2
+      displayName: 'Build'
+      inputs:
+        command: 'build'
+        arguments: '--configuration $(buildConfiguration)'
+        projects: '**/*.csproj'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Run Tests'
-  inputs:
-    command: 'test'
-    projects: './SampleTests/SampleTests.csproj'
-    arguments: '--configuration $(buildConfiguration)'
-    publishTestResults: true
-  continueOnError: false
+    - task: DotNetCoreCLI@2
+      displayName: 'Run Tests'
+      inputs:
+        command: 'test'
+        projects: './SampleTests/SampleTests.csproj'
+        arguments: '--configuration $(buildConfiguration)'
+        publishTestResults: true
+      continueOnError: false
 
-- task: DotNetCoreCLI@2
-  displayName: 'Generate NuGet Package'
-  inputs:
-    command: 'pack'
-    configuration: '$(buildConfiguration)'
-    packagesToPack: './TestHelpers/TestHelpers.csproj'
-    outputDir: '$(Build.ArtifactStagingDirectory)/packages'
-    nobuild: true
-    versioningScheme: byPrereleaseNumber
-    majorVersion: '1'
-    minorVersion: '1'
-    patchVersion: '4'
+    - task: DotNetCoreCLI@2
+      displayName: 'Generate NuGet Package'
+      inputs:
+        command: 'pack'
+        configuration: '$(buildConfiguration)'
+        packagesToPack: './$(projectName)/$(projectName).csproj'
+        outputDir: '$(Build.ArtifactStagingDirectory)/$(artifactNugetName)'
+        nobuild: true
+        versioningScheme: byBuildNumber 
+
+    # - publish: '$(Build.ArtifactStagingDirectory)/packages'
+    #   displayName: 'Publish Artifact: $(artifactNugetName)'
+    #   artifact: '$(artifactNugetName)'
+    #   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+
+- stage: publish
+  dependsOn: build
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  displayName: 'Publish Nuget Package'
+  jobs:
+  - deployment: CI_PUBLISH
+    displayName: 'Publish packages to public nuget feed'
+    environment: nuget-publish-public
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: '$(artifactNugetName)'
+            displayName: 'Download nuget packages'
+
+          # Error: DotNetCore currently does not support using an encrypted Api Key.
+          # For more information see https://github.com/microsoft/azure-pipelines-tasks/issues/7160
+          #- task: DotNetCoreCLI@2
+          #  displayName: "Publish nuget packages to public feed"
+          #  inputs:
+          #    command: 'push'
+          #    packagesToPush: '$(Agent.BuildDirectory)/$(artifactNugetName)/*.nupkg'
+          #    nuGetFeedType: 'external'
+          #    publishFeedCredentials: 'PrimeNumber'
+
+          - task: DotNetCoreCLI@2
+            displayName: Push Nuget Package
+            inputs:
+              command: custom
+              custom: nuget
+              arguments: >
+                push $(Agent.BuildDirectory)/$(artifactNugetName)/*.nupkg
+                -s https://api.nuget.org/v3/index.json
+                -k $(NuGetApiKey) # Add your Nuget.org ApiKey as secret variable
