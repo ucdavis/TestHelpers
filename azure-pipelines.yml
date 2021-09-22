@@ -95,7 +95,7 @@ stages:
 
           - task: AzureKeyVault@2
             inputs:
-              azureSubscription: 'UC Davis CAES Production(003283b1-cc5e-417a-b037-01ff3c05537b)'
+              azureSubscription: 'ci-pipeline-secrets'
               KeyVaultName: 'ci-pipeline-secrets'
               SecretsFilter: 'NuGetApiKey'
               RunAsPreJob: false
