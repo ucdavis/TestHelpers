@@ -108,4 +108,4 @@ stages:
               arguments: >
                 push $(Agent.BuildDirectory)/$(artifactNugetName)/*.nupkg
                 -s https://api.nuget.org/v3/index.json
-                -k $(NuGetApiKey) # Add your Nuget.org ApiKey as secret variable
+                -k $(NuGetApiKey)
