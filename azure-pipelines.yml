@@ -31,10 +31,10 @@ stages:
     displayName: 'Nuget - Build, Test and Pack'    
     steps:
     - task: UseDotNet@2
-      displayName: 'Use .NET 5 sdk'
+      displayName: 'Use .NET 6 sdk'
       inputs:
         packageType: 'sdk'
-        version: '5.x'
+        version: '6.x'
 
     - task: DotNetCoreCLI@2
       displayName: 'Build'
