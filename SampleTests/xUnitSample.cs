@@ -34,6 +34,7 @@ namespace SampleTests
         [InlineData(3, true)]
         [InlineData(5, true)]
         [InlineData(6, false)]
+        [InlineData(6, true, Skip = "Testing Skip")]
         public void MyFirstTheory(int value, bool expected)
         {
             IsOdd(value).ShouldBe(expected);
